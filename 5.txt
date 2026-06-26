@@ -1,0 +1,37 @@
+5th one 
+
+import numpy as np
+from collections import Counter
+
+# Generate 100 random values
+x = np.random.rand(100)
+
+# First 50 points for training
+train_data = x[:50]
+train_labels = ["Class1" if i <= 0.5 else "Class2" for i in train_data]
+
+# Remaining 50 points for testing
+test_data = x[50:]
+
+# KNN Function
+def knn(test_point, k):
+    distances = []
+
+    for i in range(len(train_data)):
+        distance = abs(test_point - train_data[i])
+        distances.append((distance, train_labels[i]))
+
+    distances.sort()
+
+    neighbors = [label for _, label in distances[:k]]
+
+    return Counter(neighbors).most_common(1)[0][0]
+
+# Test for different k values
+k_values = [1, 2, 3, 4, 5, 20, 30]
+
+for k in k_values:
+    print(f"\nResults for k = {k}")
+    for point in test_data:
+        prediction = knn(point, k)
+        print(f"{point:.3f} -> {prediction}")
