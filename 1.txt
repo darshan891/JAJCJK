@@ -1,0 +1,43 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load CSV file
+df = pd.read_csv("california_housing.csv")  # Replace with your CSV file name
+
+# Get all column names
+columns = df.columns
+
+# Histograms
+for col in columns:
+    if df[col].dtype != 'object':  # Numerical columns only
+        plt.figure(figsize=(5,3))
+        sns.histplot(df[col], bins=30, kde=True)
+        plt.title(f"Histogram - {col}")
+        plt.show()
+
+# Box Plots
+for col in columns:
+    if df[col].dtype != 'object':
+        plt.figure(figsize=(5,2))
+        sns.boxplot(x=df[col])
+        plt.title(f"Box Plot - {col}")
+        plt.show()
+
+# Outlier Detection using IQR
+print("Outliers:")
+for col in columns:
+    if df[col].dtype != 'object':
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+
+        lower = Q1 - 1.5 * IQR
+        upper = Q3 + 1.5 * IQR
+
+        outliers = df[(df[col] < lower) | (df[col] > upper)]
+        print(f"{col}: {len(outliers)}")
+
+# Dataset Summary
+print("\nDataset Summary:")
+print(df.describe())
