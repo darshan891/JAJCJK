@@ -1,0 +1,21 @@
+import csv
+
+# Initialize the hypothesis
+h = ['0', '0', '0', '0', '0', '0']
+
+# Read the CSV file
+with open("trainingdata.csv", "r") as csvfile:
+    reader = csv.reader(csvfile)
+    data = list(reader)
+
+# Apply Find-S algorithm
+for x in data:
+    if x[-1].lower() == "yes":
+        for i in range(len(h)):
+            if h[i] == '0':
+                h[i] = x[i]
+            elif h[i] != x[i]:
+                h[i] = '?'
+
+print("Maximally Specific Hypothesis:")
+print(h)
