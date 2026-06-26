@@ -1,0 +1,19 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load CSV file
+data = pd.read_csv("california_housing.csv")
+
+# Correlation Matrix
+corr_matrix = data.corr(numeric_only=True)
+
+# Heatmap
+plt.figure(figsize=(10,8))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm')
+plt.title("Correlation Matrix")
+plt.show()
+
+# Pair Plot
+sns.pairplot(data)
+plt.show()
