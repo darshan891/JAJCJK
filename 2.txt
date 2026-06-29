@@ -1,19 +1,44 @@
-import pandas as pd
-import seaborn as sns
+!pip install -q gensim
+
+import gensim.downloader as api
+import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 
-# Load CSV file
-data = pd.read_csv("california_housing.csv")
+def main():
+    model = api.load("word2vec-google-news-300")
 
-# Correlation Matrix
-corr_matrix = data.corr(numeric_only=True)
+    words = [
+        "computer", "laptop", "AI", "machine", "robot",
+        "software", "hardware", "algorithm", "network", "cybersecurity"
+    ]
 
-# Heatmap
-plt.figure(figsize=(10,8))
-sns.heatmap(corr_matrix, annot=True, cmap='coolwarm')
-plt.title("Correlation Matrix")
-plt.show()
+    vectors = np.array([model[word] for word in words])
 
-# Pair Plot
-sns.pairplot(data)
-plt.show()
+    pca = PCA(n_components=2)
+    pca_vectors = pca.fit_transform(vectors)
+
+    plt.figure(figsize=(8, 6))
+    plt.scatter(pca_vectors[:, 0], pca_vectors[:, 1])
+
+    for i, word in enumerate(words):
+        plt.text(pca_vectors[i, 0], pca_vectors[i, 1], word)
+
+    plt.title("PCA")
+    plt.show()
+
+    tsne = TSNE(n_components=2, perplexity=5, random_state=42)
+    tsne_vectors = tsne.fit_transform(vectors)
+
+    plt.figure(figsize=(8, 6))
+    plt.scatter(tsne_vectors[:, 0], tsne_vectors[:, 1])
+
+    for i, word in enumerate(words):
+        plt.text(tsne_vectors[i, 0], tsne_vectors[i, 1], word)
+
+    plt.title("t-SNE")
+    plt.show()
+
+if __name__ == "__main__":
+    main()
