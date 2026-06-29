@@ -1,21 +1,35 @@
-import pandas as pd
-from sklearn.datasets import load_iris
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
+!pip install -q gensim
 
-# Load Iris Dataset
-iris = load_iris()
-X = iris.data
-y = iris.target
+from gensim.models import Word2Vec
 
-# Apply PCA
-pca = PCA(n_components=2)
-X_pca = pca.fit_transform(X)
+def main():
+    corpus = [
+        "The patient was diagnosed with diabetes and prescribed metformin.",
+        "CT scan revealed signs of pneumonia in the left lungs.",
+        "Doctors recommend a balanced diet to manage hypertension.",
+        "Symptoms of COVID-19 include fever cough and shortness of breath.",
+        "The new cancer treatment involves immunotherapy."
+    ]
 
-# Plot
-plt.figure(figsize=(8,6))
-plt.scatter(X_pca[:,0], X_pca[:,1], c=y)
-plt.xlabel("Principal Component 1")
-plt.ylabel("Principal Component 2")
-plt.title("PCA on Iris Dataset")
-plt.show()
+    data = [line.lower().split() for line in corpus]
+
+    model = Word2Vec(
+        data,
+        vector_size=100,
+        window=3,
+        min_count=1
+    )
+
+    print("Custom Word2Vec Model Trained Successfully!")
+
+    print("\nWords similar to 'diabetes':")
+    print(model.wv.most_similar("diabetes"))
+
+    print("\nWords similar to 'scan':")
+    print(model.wv.most_similar("scan"))
+
+    print("\nVector for 'diabetes':")
+    print(model.wv["diabetes"])
+
+if __name__ == "__main__":
+    main()
