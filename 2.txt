@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
 def main():
-    model = api.load("word2vec-google-news-300")
+    model = api.load("word2vec-google-news-300") 
 
     words = [
         "computer", "laptop", "AI", "machine", "robot",
