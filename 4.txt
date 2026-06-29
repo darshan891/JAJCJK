@@ -6,7 +6,7 @@ import random
 def main():
     corpus = [
         "AI is revolutionizing many industries including healthcare and finance",
-        "Deep learning models are improving NLP applications",
+        "Deep learning models are improving NLP applications", 
         "Machine learning is widely used in predictive analytics",
         "Neural networks are at the core of modern AI",
         "Gen AI models create realistic text and images"
