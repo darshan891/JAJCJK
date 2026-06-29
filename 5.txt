@@ -1,37 +1,35 @@
-5th one 
+!pip install -q sentence-transformers
 
-import numpy as np
-from collections import Counter
+from sentence_transformers import SentenceTransformer, util
+import random
 
-# Generate 100 random values
-x = np.random.rand(100)
+def main():
+    model = SentenceTransformer("all-MiniLM-L6-v2")
 
-# First 50 points for training
-train_data = x[:50]
-train_labels = ["Class1" if i <= 0.5 else "Class2" for i in train_data]
+    words = [
+        "adventure", "journey", "quest", "mystery",
+        "discovery", "expedition", "exploration", "voyage"
+    ]
 
-# Remaining 50 points for testing
-test_data = x[50:]
+    seed = "explorer"
 
-# KNN Function
-def knn(test_point, k):
-    distances = []
+    emb = model.encode(
+        [seed] + words,
+        convert_to_tensor=True
+    )
 
-    for i in range(len(train_data)):
-        distance = abs(test_point - train_data[i])
-        distances.append((distance, train_labels[i]))
+    top = util.pytorch_cos_sim(
+        emb[0],
+        emb[1:]
+    )[0].topk(5).indices.tolist()
 
-    distances.sort()
+    w = [words[i] for i in top]
+    random.shuffle(w)
 
-    neighbors = [label for _, label in distances[:k]]
+    print("Generated Story:\n")
+    print(f"One day, an {seed} began a {w[0]}.")
+    print(f"On the way, a {w[1]} led to a {w[2]}.")
+    print(f"With help from an old {w[3]}, the {seed} reached the final {w[4]}.")
 
-    return Counter(neighbors).most_common(1)[0][0]
-
-# Test for different k values
-k_values = [1, 2, 3, 4, 5, 20, 30]
-
-for k in k_values:
-    print(f"\nResults for k = {k}")
-    for point in test_data:
-        prediction = knn(point, k)
-        print(f"{point:.3f} -> {prediction}")
+if __name__ == "__main__":
+    main()
